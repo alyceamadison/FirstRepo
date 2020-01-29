@@ -1,0 +1,37 @@
+---
+title: "Regex.rmd"
+author: "Alycea Wood"
+date: "1/28/2020"
+output: html_document
+---
+
+```{r loading libraries, echo=T, include = F}
+library(dplyr)
+library(stringr)
+```
+
+
+So the first step we are going to do is import our "measurements" dataset.
+
+```{r loading in dataset, echo=T}
+MData = read.csv("Data/measurements.csv")
+print(MData)
+```
+
+Now I'm going to add a new column named "Sp" that also changes the genus in species names to only the first letter and a period.
+
+```{r adding "Sp" column, echo=T}
+Sp1 = sub(" ",". ", MData$Species)
+MData$Sp = sub("(\\w)\\w+","\\1", Sp1)
+head(MData$Sp)
+head(MData)
+```
+
+Now I am going to create a new dataframe where Sp replaces the Species column. I also decided to get rid of the "X" column because I was noticing it was there and I don't think it was supposed to be there in the first place (plus now the dataset looks a little cleaner!).
+
+```{r sp replacing Species}
+NoSpeciesMData = select(MData,-Species, -X)
+NewMData = select(NoSpeciesMData, Sp, everything())
+head(NewMData)
+```
+
